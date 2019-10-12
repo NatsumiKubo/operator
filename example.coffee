@@ -38,12 +38,12 @@ module.exports = (robot) ->
        response += "【環境：#{key}】\n"
        for l, users of value
          if l == "責任者"
-           response += "責任者" 
-           response += "@#{users}\n"
+           response += "責任者\n" 
+           response += "- #{users}\n"
          else
-           response += "オペレーター"
+           response += "オペレーター\n"
            for user in users
-             response += "@#{user} "
+             response += "- #{user}\n "
            response += "\n"
   #   console.log(obj['2019-10-12'])
   #  res.emote "makes a freshly baked pie"
