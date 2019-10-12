@@ -7,8 +7,37 @@
 #   Uncomment the ones you want to try and experiment with.
 #
 #   These are from the scripting documentation: https://github.com/github/hubot/blob/master/docs/scripting.md
+cronJob = require('cron').CronJob
+  
 module.exports = (robot) ->
-
+  new cronJob('00 00 12 * * 1-5', () ->
+    fs = require 'fs'
+    data = fs.readFileSync '/home/hubot/scripts/result.json', 'utf8'
+    obj = JSON.parse(data)
+    now = new Date()
+    tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+    
+    year = tomorrow.getFullYear()
+    month = tomorrow.getMonth() + 1
+    date = tomorrow.getDate()
+     
+    key = year + '-' + month + '-' + date
+    response = "明日（#{key}）のオペレータ！ \n"
+     
+    for key, value of obj[key]
+      response += "\n"
+      response += "【環境：#{key}】\n"
+      for l, users of value
+        if l == "責任者"
+          response += "責任者\n" 
+          response += "- #{users}\n"
+        else
+          response += "オペレーター\n"
+          for user in users
+            response += "- #{user}\n "
+          response += "\n"
+    robot.send {room: "general"}, response 
+  ).start()
   # robot.hear /badger/i, (res) ->
   #   res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
   #
@@ -19,35 +48,35 @@ module.exports = (robot) ->
   #   else
   #     res.reply "Opening #{doorType} doors"
   #
-   robot.hear /I like pie/i, (res) ->
-     fs = require 'fs'
-     data = fs.readFileSync '/home/hubot/scripts/result.json', 'utf8'
-     obj = JSON.parse(data)
-     now = new Date()
-     tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+  robot.hear /明日のオペレータ/i, (res) ->
+    fs = require 'fs'
+    data = fs.readFileSync '/home/hubot/scripts/result.json', 'utf8'
+    obj = JSON.parse(data)
+    now = new Date()
+    tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+    
+    year = tomorrow.getFullYear()
+    month = tomorrow.getMonth() + 1
+    date = tomorrow.getDate()
      
-     year = tomorrow.getFullYear()
-     month = tomorrow.getMonth() + 1
-     date = tomorrow.getDate()
+    key = year + '-' + month + '-' + date
+    response = "明日（#{key}）のオペレータ！ \n"
      
-     key = year + '-' + month + '-' + date
-     response = "明日（#{key}）のオペレータ！ \n"
-     
-     for key, value of obj[key]
-       response += "\n"
-       response += "【環境：#{key}】\n"
-       for l, users of value
-         if l == "責任者"
-           response += "責任者\n" 
-           response += "- #{users}\n"
-         else
-           response += "オペレーター\n"
-           for user in users
-             response += "- #{user}\n "
-           response += "\n"
+    for key, value of obj[key]
+      response += "\n"
+      response += "【環境：#{key}】\n"
+      for l, users of value
+        if l == "責任者"
+          response += "責任者\n" 
+          response += "- #{users}\n"
+        else
+          response += "オペレーター\n"
+          for user in users
+            response += "- #{user}\n "
+          response += "\n"
   #   console.log(obj['2019-10-12'])
   #  res.emote "makes a freshly baked pie"
-     res.emote response 
+    res.emote response 
   #
   # lulz = ['lol', 'rofl', 'lmao']
   #
