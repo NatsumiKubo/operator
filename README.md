@@ -18,3 +18,10 @@ docker cp result.json hubot:/home/hubot/scripts/
 docker cp example.coffee hubot:/home/hubot/scripts/example.coffee
 docker restart hubot
 ```
+
+# Install cron
+https://github.com/kelektiv/node-cron/releases/tag/v1.7.2 でcronをダウンロードする
+解凍したディレクトリにcronと名前を付けて、そのディレクトリを以下のコマンドでコピーする
+```
+docker cp cron hubot:/home/hubot/node_modules/
+```
